@@ -1,42 +1,60 @@
 from numpy import random
-i = 0
-while i < 1:
-    starting_number = input("Enter the starting number: ")
-    if starting_number.isdigit():
-        starting_number = int(starting_number)
-        i += 1
 
-    else:
-        print(f"{starting_number} is not valid, Pls enter valid integer positive starting number")
-        continue
 
-while True:
-    try:
-        ending_number = input("Enter the ending number: ")
-        ending_number = int(ending_number)
-        if ending_number <= starting_number:
-            print(f"ending number can't be less than {starting_number+1}")
+class GuessNumber:
+    def __init__(self):
+        self.guesses = 0
+        self.min = self.start_number()
+        self.max = self.end_number()
+        self.number = random.randint(self.min, self.max)
+
+    def start_number(self):
+        starting_number = input("Enter the starting number: ")
+        if starting_number.isdigit():
+            return int(starting_number)
+
         else:
-            break
+            print(f"{starting_number} is not valid, Please enter valid integer positive starting number")
+            return self.start_number()
 
-    except Exception as e:
-        print(f"{ending_number} is not valid, pls enter valid integer ending number the error code is -------{e}")
+    def end_number(self):
+        try:
+            ending_number = input("Enter the ending number: ")
+            ending_number = int(ending_number)
+            if ending_number <= self.min:
+                print(f"ending number can't be less than {self.min + 1}")
+                return self.end_number()
+            else:
+                return ending_number
 
-x = random.randint(starting_number, ending_number)
+        except Exception as e:
+            print(f"{ending_number} is not valid, Error:{e}")
+            return self.end_number()
 
-k = 0
-while True:
-    try:
-        guessed_number = input("try to guess the number: ")
-        guessed_number = int(guessed_number)
-        if guessed_number < starting_number or guessed_number > ending_number:
-            print(F"{guessed_number} is not valid, can't be less than {starting_number} or more than {ending_number}")
-        else:
-            k += 1
-            if guessed_number == x:
-                print(f"you guessed it right, take {k} guess")
-                break
+    def play(self):
+        while True:
+            try:
+                guessed_number = input("try to guess the number: ")
+                guessed_number = int(guessed_number)
+                if guessed_number < self.min or guessed_number > self.max:
+                    print(f"{guessed_number} is not valid, can't be less than {self.min} or more than {self.max}")
+                    return self.play()
+                elif guessed_number > self.number:
+                    self.guesses += 1
+                    print("Your guess was over.")
+                elif guessed_number < self.number:
+                    self.guesses += 1
+                    print("You guess was under.")
+                else:
+                    self.guesses += 1
+                    if guessed_number == self.number:
+                        print(f"you guessed it right, take {self.guesses} guess")
+                        break
+            except Exception as r:
+                print(
+                    f"{guessed_number} is not valid, Error: {r}")
+                return self.play()
 
-    except Exception as r:
-        print(f"{guessed_number} is not valid, pls enter valid integer guessed number, the error code is ------- {r}")
 
+game = GuessNumber()
+game.play()
